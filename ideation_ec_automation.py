@@ -183,7 +183,7 @@ class ideation_ec_automation:
             y_values = x.iloc[peaks].values.flatten()
             x_values = x.index.values[peaks]
             plt.plot(x_values, y_values, 'x')
-            plt.show()
+
 
             # plot the legend and name the labels
             plt.legend(x.columns)
