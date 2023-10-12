@@ -38,10 +38,8 @@ if __name__ == '__main__':
     # Event Loop to process "events" and get the "values" of the inputs
     while True:
         event, values = window.read()
-        if event == "Ok":
-            continue
         # if user closes window or clicks cancel or clicks ok -> exit
-        if event == sg.WIN_CLOSED or event == 'Cancel':
+        if event == sg.WIN_CLOSED or event == 'Cancel' or event == "Ok":
             break
     # close the window
     window.close()
