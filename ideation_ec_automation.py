@@ -102,7 +102,7 @@ class ideation_ec_automation:
 
     # This function creates a csv with only values
 
-    def format_file_to_csv(self, blank_line=1, head=False):
+    def format_file_to_csv(self, blank_line=1, head=False, column_index=None):
         # figure out how many lines to skip
         skip = self.get_header_line(head=head)
 
@@ -114,7 +114,10 @@ class ideation_ec_automation:
         content = islice(file, skip + blank_line + 1, None)
 
         # create file with headers
-        self.filename = 'f-' + self.filename
+        if column_index is not None:
+            self.filename = 'f-' + str(column_index) + '-' + self.filename
+        else:
+            self.filename = 'f-' + self.filename
 
         out = open(self.source + "\\" + self.filename, 'w')
 
