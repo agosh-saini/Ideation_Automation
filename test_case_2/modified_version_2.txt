@@ -1,43 +1,43 @@
-Nov. 2, 2022   13:07:40,,
-Square Wave Voltammetry,,,
+Nov. 2, 2022   13:07:40
+Square Wave Voltammetry
 File: c:\users\fatemeh\onedrive - university of waterloo\ideation lab\experiments\antibiotic detection\vancomycin sensing (mahmoud's project)\vancomycin animal experiments\nov2.22\e#2, w new mn\in buffer\0um, m1.txt,
-Data Source:  Experiment,,,
-Instrument Model:  CHI1040C,,,
-Header: ,,,
-Note: ,,,
+Data Source:  Experiment
+Instrument Model:  CHI1040C
+Header: 
+Note:
+
+Init E (V) = 0.2
+Final E (V) = -0.7
+Incr E (V) = 0.001
+Amplitude (V) = 0.025
+Frequency (Hz) = 100
+Quiet Time (sec) = 20
+Sensitivity (A/V) = 1e-4
+
+E3 Scan On
+Sens 3 = 1e-006
+
+Results:
+
+Channel 1:
+Difference:
+
+Forward:
 ,,,
-Init E (V) = 0.2,,,
-Final E (V) = -0.7,,,
-Incr E (V) = 0.001,,,
-Amplitude (V) = 0.025,,,
-Frequency (Hz) = 100,,,
-Quiet Time (sec) = 20,,,
-Sensitivity (A/V) = 1e-4,,,
-,,,
-E3 Scan On,,,
-Sens 3 = 1e-006,,,
-,,,
-Results:,,,
-,,,
-Channel 1:,,,
-Difference:,,,
-,,,
-Forward:,,,
-,,,
-Reverse:,,,
+Reverse:
 ,,,
 Channel 3:,,,
 Difference:,,,
 ,,,
 Forward:,,,
 ,,,
-Reverse:,,,
-Ep = -0.304V,,,
-ip = 3.811e-7A,,,
-Ah = 1.443e-8VA,,,
-,,,
+Reverse:
+Ep = -0.304V
+ip = 3.811e-7A
+Ah = 1.443e-8VA
+
 Potential/V,1,2,3
-,,,
+
 0.16,-9.66E-07,-8.41E-07,-1.24E-06
 0.159,-9.63E-07,-8.35E-07,-1.22E-06
 0.158,-9.61E-07,-8.29E-07,-1.21E-06
@@ -898,43 +898,3 @@ Potential/V,1,2,3
 -0.697,-1.64E-06,-1.66E-06,-1.65E-06
 -0.698,-1.64E-06,-1.66E-06,-1.65E-06
 -0.699,-1.64E-06,-1.66E-06,-1.65E-06
-,,,
-,,,
-,,,
-,,,
-,,,
-,,,
-,,,
-,,,
-,,,
-,,,
-,,,
-,,,
-,,,
-,,,
-,,,
-,,,
-,,,
-,,,
-,,,
-,,,
-,,,
-,,,
-,,,
-,,,
-,,,
-,,,
-,,,
-,,,
-,,,
-,,,
-,,,
-,,,
-,,,
-,,,
-,,,
-,,,
-,,,
-,,,
-,,,
-,,,

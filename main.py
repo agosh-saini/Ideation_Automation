@@ -49,7 +49,7 @@ if __name__ == '__main__':
 
     # get all the files in the directory
     files = [f for f in listdir(path) if isfile(join(path, f))]
-
+    print(literal_eval(values['column']))
     # determines if peaks or valleys are desired
     if values['peak'] is False:
         direction = -1
@@ -64,28 +64,29 @@ if __name__ == '__main__':
 
     # repeat for all the files we have
     for file in files:
-        test = ideation_ec_automation(path, file)
+        for column_i in range(len(literal_eval(values['column']))):
+            test = ideation_ec_automation(path, file)
 
-        # change the seperator
-        if values['seperator'] == ['Tab']:
-            test.convert_deliminator(sep='\t')
+            # change the seperator
+            if values['seperator'] == ['Tab']:
+                test.convert_deliminator(sep='\t')
 
-        # remove metadata
-        test.format_file_to_csv(blank_line=int(values['blank']),
-                                head=values['header'])
-        # convert the txt file to csv
-        test.convert_csv()
+            # remove metadata
+            test.format_file_to_csv(blank_line=int(values['blank']),
+                                    head=values['header'])
+            # convert the txt file to csv
+            test.convert_csv()
 
-        # create the pandas dataframe
-        df = test.create_df()
+            # create the pandas dataframe
+            df = test.create_df()
 
-        # look for peaks and get the graphs
-        test.plot_res(column=literal_eval(values['column']),
-                      smooth=float(values['smooth']), graph=values['graph'],
-                      threshold=float(values['thres']),
-                      min_height=float(values['height']),
-                      direction=direction,
-                      bounds=bound)
+            # look for peaks and get the graphs
+            test.plot_res(column=[column_i],
+                          smooth=float(values['smooth']), graph=values['graph'],
+                          threshold=float(values['thres']),
+                          min_height=float(values['height']),
+                          direction=direction,
+                          bounds=bound)
 
     # -------- SCRIPT END ------------- #
 
