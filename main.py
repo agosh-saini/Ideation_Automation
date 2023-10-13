@@ -49,7 +49,7 @@ if __name__ == '__main__':
 
     # get all the files in the directory
     files = [f for f in listdir(path) if isfile(join(path, f))]
-    print(literal_eval(values['column']))
+
     # determines if peaks or valleys are desired
     if values['peak'] is False:
         direction = -1
