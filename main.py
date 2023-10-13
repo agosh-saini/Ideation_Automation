@@ -64,7 +64,7 @@ if __name__ == '__main__':
 
     # repeat for all the files we have
     for file in files:
-        for column_i in range(len(literal_eval(values['column']))):
+        for column_i in literal_eval(values['column']):
             test = ideation_ec_automation(path, file)
 
             # change the seperator
