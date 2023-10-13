@@ -194,7 +194,7 @@ class ideation_ec_automation:
 
             # save the image in the folder named figure
             name = self.filename.replace('.csv', '')
-            plt.savefig(self.source + "\\" + "figures" + "\\" + name + "_" + tag)
+            plt.savefig(self.source + "\\" + "figures" + "\\" + "column_" + str(column) + "_" + name + "_" + tag)
             plt.close()
 
         # this section saves the peaks in a summary document
@@ -251,12 +251,21 @@ class ideation_ec_automation:
         if location is None:
             location = self.source + "\\" + "summary" + "\\" + "summary-" + self.filename
 
+        existing_file = False
+        # check if location exists
+        if os.path.exists(location):
+            existing_file = True
+
         # makes a local copy to ensure original is not edited
         local_df = peak_y.copy()
 
         # add the height and then save to csv
         local_df.loc[:, 'height'] = height
-        local_df.to_csv(location)
+
+        if existing_file:
+            local_df.to_csv(location, mode='a')
+        else:
+            local_df.to_csv(location)
 
     # the following function allows for the conversion of the tab separated file
     # to comma separated file
