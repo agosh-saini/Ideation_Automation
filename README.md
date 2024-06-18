@@ -8,9 +8,7 @@ Step 3: To run, click **Automate_SW.bat** file
 
 *Note: This method only works on Windows computers, for Mac or Linux operating systems, please use Python files.*
 
-## Citation
-
-## Acknlogements
+## Acknowledgements
 This work was done as part of my time at IDEATION lab under Dr. Mahla Poudineh. ChatGPT was used for resolving errors while creating the files.
 
 ## Citation Information
