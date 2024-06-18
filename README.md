@@ -1,5 +1,5 @@
 # EC Sensing Data Analysis Application
-This application can be used to automate data analysis, graph generation, and data summarization tasks with most forms of Electrochemical Data.
+This application can be used to automate data analysis, graph generation, and data summarization tasks with most forms of Electrochemical Data. A video explaining how to use the software can be found by [clicking here](https://www.loom.com/share/7880c0045b4042feadb9aec0fff77dee).
 
 ## Installation
 Step 1: Download [Automate_SW_v1.zip](https://github.com/agosh-saini/Ideation_Automation/blob/master/Automate_SW_v1.zip) \
