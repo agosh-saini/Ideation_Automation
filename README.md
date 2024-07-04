@@ -21,7 +21,7 @@ This work was done as part of my time at IDEATION lab under Dr. Mahla Poudineh. 
 
 ## Citation Information
 Please cite this package if it was used in your work. Information for citation can be found below: \
-Name - Agosh Saini\
+Name - Agosh Saini, Fatemeh Keyvani Mahla Poudineh \
 Contact - contact@agoshsaini.com \
 Year of publication - 2023 \
 Title - EC Sensing Data Analysis Application\
