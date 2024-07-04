@@ -6,13 +6,13 @@ Step 1: Download [Automate_SW_v1.zip](https://github.com/agosh-saini/Ideation_Au
 Step 2: Extract the zip file into a folder with no other files \
 Step 3: To run, click **Automate_SW.bat** file 
 
-## Explanation of functions
-Automate_SW.bat: This file automates runs the relevant executable files \
-merge.bat: this file merges all the comma-separated files generated for individual experiments \
-ideation_automation_ec (class): Class with all the functions associated with automation \
-convert.csv(): function for converting text file normally outputted to comma-separated files \
-get_header_line(): function that removes all the meta-data available in files to prepare for analysis \
-plot_res(): function that takes cleaned data and graphs the results. This can detect peaks using two methods using either derivatives or can detect peaks using scipy module where a gaussian curve is fitted to the peaks to determine the peak values.
+## Explanation of main functions
+**Automate_SW.bat**: This file automates runs the relevant executable files \
+**merge.bat**: this file merges all the comma-separated files generated for individual experiments \
+**ideation_automation_ec (class)**: Class with all the functions associated with automation \
+**convert.csv()**: function for converting text file normally outputted to comma-separated files \
+**get_header_line()**: function that removes all the meta-data available in files to prepare for analysis \
+**plot_res()**: function that takes cleaned data and graphs the results. This can detect peaks using two methods using either derivatives or can detect peaks using scipy module where a Gaussian curve is fitted to the peaks to determine the peak values.
 
 *Note: This method only works on Windows computers, for Mac or Linux operating systems, please use Python files.*
 
