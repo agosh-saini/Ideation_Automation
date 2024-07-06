@@ -19,7 +19,7 @@ from typing import Optional, Tuple, Union
 """
 Author: Agosh Saini
 Website: agoshsaini.com
-Contact: as7saini@gmail.com
+Contact: contact@agoshsaini.com
 
 IDEATION Lab Contact: mahla.poudineh@uwaterloo.ca
 
