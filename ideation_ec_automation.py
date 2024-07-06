@@ -1,13 +1,18 @@
 # -------- Imports --------- #
+# Importing libraries 
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
-import os
-import shutil
-import re
+
+# Importing functions from libraries
+from pandas import DataFrame, read_csv
+from os import mkdir, remove, rename
+from os.path import exists as path_exists
+from shutil import copy
+from re import sub
 from itertools import islice
 from datetime import datetime
 from scipy.signal import find_peaks, peak_prominences
+from typing import Optional, Tuple, Union
 # -------- Imports END --------- #
 
 # -------- Docstring --------- #
@@ -43,223 +48,262 @@ Description:
 
 class ideation_ec_automation:
 
-    # init function
-    def __init__(self, source, filename):
+    def __init__(self, source: str, filename: str) -> None:
+        """
+        Initialize the ideation_ec_automation class.
+
+        Parameters:
+        - source (str): The source directory path.
+        - filename (str): The name of the file.
+
+        Returns:
+        - None
+        """
         self.source = source
         self.filename = filename
-        self.data = pd.DataFrame()
+        self.data = DataFrame()
 
-        if os.path.exists(source + "\\" + "figures") is False:
-            os.mkdir(source + "\\" + "figures")
+        if path_exists(source + "\\" + "figures") is False:
+            mkdir(source + "\\" + "figures")
 
-        if os.path.exists(self.source + "\\" + "summary") is False:
-            os.mkdir(self.source + "\\" + "summary")
+        if path_exists(self.source + "\\" + "summary") is False:
+            mkdir(self.source + "\\" + "summary")
 
-    # this function converts the txt file to csv file
-    # makes it easier to work with as well if you want to
-    # go through data manually
+    def convert_csv(self, location: Optional[str]=None, file: Optional[str]=None) -> str:
+        """
+        Convert a txt file to a csv file.
 
-    def convert_csv(self, location=None, file=None):
-        # allows you to change location you copy to
+        Parameters:
+        - location (Optional[str]): The location to copy the file to. If None, use self.source.
+        - file (Optional[str]): The name of the file to convert. If None, use self.filename.
+
+        Returns:
+        - str: The path of the exported csv file.
+        """
         if location is None:
             location = self.source
         if file is None:
             file = self.filename
 
-        # modify file names so csv is used moving forward
         file_path = self.source + '\\' + file
         self.filename = self.filename.replace('.txt', '') + '.csv'
         self.filename = self.filename.replace(',', '')
         export_path = location + '\\' + self.filename
 
-        # create the copy
-        shutil.copy(file_path, export_path)
+        copy(file_path, export_path)
+        remove(file_path)
 
-        # delete original
-        os.remove(file_path)
+        return export_path
 
-    # this function converts the table in txt file
-    # to pandas table. It also saves the metadata
-    # in the metadata column as a dictionary (maybe)
-    def get_header_line(self, head=False):
-        # base case
+    def get_header_line(self, head: Union[bool, str]=False) -> int:
+        """
+        Get the line number of the header in the txt file.
+
+        Parameters:
+        - head (Union[bool, str]): The keyword or boolean value to identify the header line. If False, use 'Potential/V'.
+
+        Returns:
+        - int: The line number of the header.
+        """
         if head is False:
             head = 'Potential/V'
 
-        # seeing how many lines to skip during conversion
         count = 0
-
-        # this created an array of lines
         file = open(self.source + "\\" + self.filename)
         lines = file.readlines()
 
-        # check line to see if it contains keywords of headers
         for line in lines:
             if head in line:
                 break
             count += 1
         return count
 
-    # This function creates a csv with only values
+    def format_file_to_csv(self, blank_line: Optional[int]=1, head: Optional[bool]=False, column_index: Optional[int]=None) -> None:
+        """
+        Format the file to a csv file.
 
-    def format_file_to_csv(self, blank_line=1, head=False, column_index=None):
-        # figure out how many lines to skip
+        Parameters:
+        - blank_line (Optional[int]): The number of blank lines between data and headers. Default is 1.
+        - head (Optional[bool]): Whether to include headers in the csv file. Default is False.
+        - column_index (Optional[int]): The index of the column to include in the csv file. Default is None.
+
+        Returns:
+        - None
+        """
         skip = self.get_header_line(head=head)
-
-        # get headers
         file = open(self.source + "\\" + self.filename)
         header = islice(file, skip, skip+1)
-
-        # get rid of blank row between data and headers
         content = islice(file, skip + blank_line + 1, None)
 
-        # create file with headers
         if column_index is not None:
             self.filename = 'f-' + str(column_index) + '-' + self.filename
         else:
             self.filename = 'f-' + self.filename
 
         out = open(self.source + "\\" + self.filename, 'w')
-
         out.writelines(header)
 
         for line in content:
             out.writelines(line)
         out.close()
 
-    # this function just creates a pandas object
-    def create_df(self):
-        self.data = pd.read_csv(self.source + "\\" + self.filename, index_col=0)
+    def create_df(self) -> DataFrame:
+        """
+        Create a pandas DataFrame from the csv file.
+
+        Returns:
+        - DataFrame: The created DataFrame.
+        """
+        self.data = read_csv(self.source + "\\" + self.filename, index_col=0)
         return self.data
 
-    # plot the results
-    def plot_res(self, bounds=None, column=None, smooth=False, graph=False,
-                 threshold=1.e-8, min_height=1e-7, direction=1):
+    def plot_res(self, bounds: Optional[Tuple[float, float]]=None, column: Optional[int]=None,
+                 smooth: Union[bool, int]=False, graph: bool=False,
+                 threshold: float=1.e-8, min_height: float=1e-7, direction: int=1) -> None:
+        """
+        Plot the results.
 
+        Parameters:
+        - bounds (Optional[Tuple[float, float]]): The bounds of interest on the x-axis. Default is None.
+        - column (Optional[int]): The index of the column to plot. Default is None.
+        - smooth (Union[bool, int]): Whether to smooth the function. If True, use a default smoothing value of 5. If False, do not smooth. If int, use the specified smoothing value. Default is False.
+        - graph (bool): Whether to display the graph. Default is False.
+        - threshold (float): The threshold criteria for selecting peaks. Default is 1.e-8.
+        - min_height (float): The minimum height of peaks. Default is 1e-7.
+        - direction (int): The direction of peaks. Default is 1.
+
+        Returns:
+        - None
+        """
         x = self.data
 
-        # check to see bounds of interests on x-axis
         if bounds is not None:
             x = x.loc[x.index.to_series().between(bounds[0], bounds[1])]
 
-        # check to see the columns of interests
         if column is not None:
-            x = x.iloc[:, column]
+            x = x.iloc[:, [column]]
 
-        # smooths function if needed
         if smooth is not False:
             if smooth is True:
-                smooth = 5
-            # takes average of surrounding data
+                if type(smooth) is bool: smooth = 5
+                if type(smooth) is int: smooth = smooth
             x = x.ewm(span=smooth).mean()
 
-        # this section finds peaks, it then selected the peaks that meet a certain threshold criteria
-        # it then filters all the values of the peaks
         for i in range(len(x.columns)):
-            # get the peaks and the height of the peak
             peaks, _ = find_peaks(direction*x.iloc[:, i].to_numpy(), height=min_height)
             prominences = peak_prominences(-x.iloc[:, i].to_numpy(), peaks)[0]
-
-            # filter the peaks based on the threshold
             filter_arr = [(prominences[i] > threshold) for i in range(len(prominences))]
             filter_arr = np.where(filter_arr)[0]
-
-            # removing the noise
             peaks = peaks[filter_arr]
             prominences = prominences[filter_arr]
 
-        # plots the results
         if graph is True:
-            # tag makes each graph unique so no graph is overwritten
             tag = datetime.today().strftime('%Y-%m-%d_%H-%M-%S') + ".png"
-
-            # plot the x values
             plt.plot(x)
 
-            # plots the peaks and adds the height of the peaks
             for i, peak in enumerate(peaks):
                 plt.vlines(x=x.index.values[peak], ymin=x.iloc[peak] + prominences[i],
                            ymax=x.iloc[peak], color="C1")
                 plt.text(x.index.values[peak], x.iloc[peak] + prominences[i]/2,
                          '{:.2e}'.format(prominences[i]), rotation=90, verticalalignment='center')
-            # plots the peaks as x marks
             y_values = x.iloc[peaks].values.flatten()
             x_values = x.index.values[peaks]
             plt.plot(x_values, y_values, 'x')
 
-
-            # plot the legend and name the labels
             plt.legend(x.columns)
             plt.xlabel(x.index.name)
 
-            # save the image in the folder named figure
             name = self.filename.replace('.csv', '')
             plt.savefig(self.source + "\\" + "figures" + "\\" + "column_" + str(column) + "_" + name + "_" + tag)
             plt.close()
 
-        # this section saves the peaks in a summary document
         self.insert_signal(x.iloc[peaks, :], prominences)
 
-    # returns the min and max between ranges - Not used in current version
-    def get_max_min(self, dataframe=pd.DataFrame(), get_max=False):
+    def get_max_min(self, dataframe=DataFrame(), get_max: Optional[bool]=False) -> int:
+        """
+        Get the minimum or maximum value from a DataFrame.
 
-        # ensuring the values are set
+        Parameters:
+        - dataframe (DataFrame): The DataFrame to get the value from. If empty, use self.data. Default is an empty DataFrame.
+        - get_max (Optional[bool]): Whether to get the maximum value. If False, get the minimum value. Default is False.
+
+        Returns:
+        - int: The minimum or maximum value.
+        """
         if dataframe.empty:
             dataframe = self.data
 
-        # returns min or max between regions
         if get_max is False:
             return dataframe.min()
         return dataframe.max()
 
-    # this function returns the baseline values between regions - not used in current version
-    def get_baseline(self, x=pd.DataFrame(), bounds=None):
+    def get_baseline(self, x: Optional[DataFrame]=DataFrame(), bounds: Optional[Tuple[float,float]]=None) -> int:
+        """
+        Get the baseline values between regions.
 
-        # Filling the data
+        Parameters:
+        - x (Optional[DataFrame]): The DataFrame to get the baseline from. If empty, use self.data. Default is an empty DataFrame.
+        - bounds (Optional[Tuple[float,float]]): The bounds of interest. Default is None.
+
+        Returns:
+        - int: The baseline value.
+        """
         if x.empty:
             x = self.data
 
-        # Sorting the data
         if bounds is not None:
             x = x.loc[x.index.to_series().between(bounds[0], bounds[1])]
 
         return x.mean()
 
-    # this following function takes the values of x and y and returns
-    # the local min/max values
-    # Not used in current version
-    def get_peaks(self, x, y, threshold=(-0.4e-7)):
-        # sets up numpy arrays for tracking
+    def get_peaks(self, x: np.ndarray, y:np.ndarray, threshold: Optional[float]=None) -> np.ndarray:
+        """
+        Get the local min/max values from x and y arrays.
+
+        Parameters:
+        - x (np.ndarray): The x array.
+        - y (np.ndarray): The y array.
+        - threshold (Optional[float]): The threshold value for detecting peaks. Default is None.
+
+        Returns:
+        - np.ndarray: The array of peak values.
+        """
+        if threshold is None: threshold = -0.4e-7
+
         peak_x = np.array([])
         peak_y = np.array([])
         peak_xy = np.array([])
 
-        # this checks if the values is a minimum and if the value meets a threshold value
         for k in range(2, len(x)-1):
             if y[k] < y[k - 1]:
                 if y[k] < y[k + 1]:
                     if y[k] < threshold:
                         peak_x = np.append(peak_x, x[k])
                         peak_y = np.append(peak_y, y[k])
-            # Summarize the value into one array
             peak_xy = np.array([peak_x, peak_y])
         return peak_xy
 
-    # the following function takes all the peaks and inputs that into a csv summary file
-    def insert_signal(self, peak_y, height, location=None):
-        # set up the file name
+    def insert_signal(self, peak_y: DataFrame, height: float, location=None) -> None:
+        """
+        Insert the peak values into a summary document.
+
+        Parameters:
+        - peak_y (DataFrame): The DataFrame of peak values.
+        - height (float): The height of the peaks.
+        - location (Optional[str]): The location to save the summary document. If None, use self.source + "\\" + "summary" + "\\" + "summary-" + self.filename. Default is None.
+
+        Returns:
+        - None
+        """
         if location is None:
             location = self.source + "\\" + "summary" + "\\" + "summary-" + self.filename
 
         existing_file = False
-        # check if location exists
-        if os.path.exists(location):
+
+        if path_exists(location):
             existing_file = True
 
-        # makes a local copy to ensure original is not edited
         local_df = peak_y.copy()
-
-        # add the height and then save to csv
         local_df.loc[:, 'height'] = height
 
         if existing_file:
@@ -267,36 +311,45 @@ class ideation_ec_automation:
         else:
             local_df.to_csv(location)
 
-    # the following function allows for the conversion of the tab separated file
-    # to comma separated file
-    def convert_deliminator(self, location=None, file=None, sep=','):
-        # allows you to change location you copy to
+    def convert_deliminator(self, location: Optional[str]=None, file: Optional[str]=None, sep: Optional[str]=None):
+        """
+        Convert the delimiter of a file.
+
+        Parameters:
+        - location (Optional[str]): The location of the file. If None, use self.source. Default is None.
+        - file (Optional[str]): The name of the file to convert. If None, use self.filename. Default is None.
+        - sep (Optional[str]): The delimiter to use. If None, use ','. Default is None.
+
+        Returns:
+        - None
+        """
+        if sep is None: sep = ','
         if location is None:
             location = self.source
         if file is None:
             file = self.filename
 
-        # modify file names so csv is used moving forward
         file_path = self.source + '\\' + file
         local_filename = self.filename
         local_filename = local_filename.replace('.txt', '-del.txt')
         local_filename = local_filename.replace(',', '')
         export_path = location + '\\' + local_filename
 
-        # reading given tsv file
         with open(file_path, 'r') as my_file:
             with open(export_path, 'w') as csv_file:
                 content = islice(my_file, 0, None)
                 for line in content:
-                    # Replace every tab with comma
-                    file_content = re.sub(sep, ", ", line)
-                    # Writing into csv file
+                    file_content = sub(sep, ", ", line)
                     csv_file.writelines(file_content)
 
-        # delete original
-        os.remove(file_path)
+        remove(file_path)
+        rename(export_path, file_path)
 
-        # rename changed file
-        os.rename(export_path, file_path)
-
-# -------- Class END --------- #
+if __name__ == "__main__":
+    path_in = "C:\\Users\\westw\\Documents\\Personal\\Ideation_Automation\\test_case"
+    file = "modified_version.txt"
+    test = ideation_ec_automation(path_in, file)
+    test.convert_deliminator(sep=',')
+    test.format_file_to_csv(blank_line=1, head=False)
+    test.create_df()
+    test.plot_res(column=2, smooth=15, graph=True, threshold=1.e-8, min_height=1.e-7, direction=1, bounds=None)
