@@ -74,8 +74,8 @@ class ideation_ec_automation:
         Convert a txt file to a csv file.
 
         Parameters:
-        - location (Optional[str]): The location to copy the file to. If None, use self.source.
-        - file (Optional[str]): The name of the file to convert. If None, use self.filename.
+        - location (str, None): The location to copy the file to. If None, use self.source.
+        - file (str, None): The name of the file to convert. If None, use self.filename.
 
         Returns:
         - str: The path of the exported csv file.
@@ -100,7 +100,7 @@ class ideation_ec_automation:
         Get the line number of the header in the txt file.
 
         Parameters:
-        - head (Union[bool, str]): The keyword or boolean value to identify the header line. If False, use 'Potential/V'.
+        - head (bool, str): The keyword or boolean value to identify the header line. If False, use 'Potential/V'.
 
         Returns:
         - int: The line number of the header.
@@ -118,14 +118,14 @@ class ideation_ec_automation:
             count += 1
         return count
 
-    def format_file_to_csv(self, blank_line: Optional[int]=1, head: Optional[bool]=False, column_index: Optional[int]=None) -> None:
+    def format_file_to_csv(self, blank_line: int=1, head: Union[bool, str]=False, column_index: Optional[int]=None) -> None:
         """
         Format the file to a csv file.
 
         Parameters:
-        - blank_line (Optional[int]): The number of blank lines between data and headers. Default is 1.
-        - head (Optional[bool]): Whether to include headers in the csv file. Default is False.
-        - column_index (Optional[int]): The index of the column to include in the csv file. Default is None.
+        - blank_line (int): The number of blank lines between data and headers. Default is 1.
+        - head (bool, str): Whether to include headers in the csv file. Default is False.
+        - column_index (int): The index of the column to include in the csv file. Default is None.
 
         Returns:
         - None
@@ -219,25 +219,25 @@ class ideation_ec_automation:
 
         self.insert_signal(x.iloc[peaks, :], prominences)
 
-    def get_max_min(self, dataframe=DataFrame(), get_max: Optional[bool]=False) -> int:
+    def get_max_min(self, dataframe: Optional[DataFrame]=None, get_max: bool=False) -> int:
         """
         Get the minimum or maximum value from a DataFrame.
 
         Parameters:
         - dataframe (DataFrame): The DataFrame to get the value from. If empty, use self.data. Default is an empty DataFrame.
-        - get_max (Optional[bool]): Whether to get the maximum value. If False, get the minimum value. Default is False.
+        - get_max (bool): Whether to get the maximum value. If False, get the minimum value. Default is False.
 
         Returns:
         - int: The minimum or maximum value.
         """
-        if dataframe.empty:
+        if dataframe is None:
             dataframe = self.data
 
         if get_max is False:
             return dataframe.min()
         return dataframe.max()
 
-    def get_baseline(self, x: Optional[DataFrame]=DataFrame(), bounds: Optional[Tuple[float,float]]=None) -> int:
+    def get_baseline(self, x: Optional[DataFrame]=None, bounds: Optional[Tuple[float,float]]=None) -> int:
         """
         Get the baseline values between regions.
 
@@ -248,7 +248,7 @@ class ideation_ec_automation:
         Returns:
         - int: The baseline value.
         """
-        if x.empty:
+        if None:
             x = self.data
 
         if bounds is not None:
@@ -256,7 +256,7 @@ class ideation_ec_automation:
 
         return x.mean()
 
-    def get_peaks(self, x: np.ndarray, y:np.ndarray, threshold: Optional[float]=None) -> np.ndarray:
+    def get_peaks(self, x: np.ndarray, y: np.ndarray, threshold: Optional[float]=None) -> np.ndarray:
         """
         Get the local min/max values from x and y arrays.
 
@@ -283,7 +283,7 @@ class ideation_ec_automation:
             peak_xy = np.array([peak_x, peak_y])
         return peak_xy
 
-    def insert_signal(self, peak_y: DataFrame, height: float, location=None) -> None:
+    def insert_signal(self, peak_y: DataFrame, height: float, location: Optional[str]=None) -> None:
         """
         Insert the peak values into a summary document.
 
@@ -324,6 +324,7 @@ class ideation_ec_automation:
         - None
         """
         if sep is None: sep = ','
+        
         if location is None:
             location = self.source
         if file is None:
