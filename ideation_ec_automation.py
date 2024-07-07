@@ -7,6 +7,8 @@ import numpy as np
 from pandas import DataFrame, read_csv
 from os import mkdir, remove, rename
 from os.path import exists as path_exists
+from os.path import join as path_join
+from glob import glob
 from shutil import copy
 from re import sub
 from itertools import islice
@@ -68,6 +70,8 @@ class ideation_ec_automation:
 
         if path_exists(self.source + "\\" + "summary") is False:
             mkdir(self.source + "\\" + "summary")
+
+        return None
 
     def convert_csv(self, location: Optional[str]=None, file: Optional[str]=None) -> str:
         """
@@ -136,16 +140,17 @@ class ideation_ec_automation:
         content = islice(file, skip + blank_line + 1, None)
 
         if column_index is not None:
-            self.filename = 'f-' + str(column_index) + '-' + self.filename
+            self.filename = 'f_Temp_file-' + str(column_index) + '-' + self.filename
         else:
-            self.filename = 'f-' + self.filename
+            self.filename = 'f_Temp_file--' + self.filename
 
-        out = open(self.source + "\\" + self.filename, 'w')
-        out.writelines(header)
+        with open(self.source + "\\" + self.filename, 'r') as out:
+            out.writelines(header)
 
-        for line in content:
-            out.writelines(line)
-        out.close()
+            for line in content:
+                out.writelines(line)
+
+        return None
 
     def create_df(self) -> DataFrame:
         """
@@ -218,6 +223,8 @@ class ideation_ec_automation:
             plt.close()
 
         self.insert_signal(x.iloc[peaks, :], prominences)
+
+        return None
 
     def get_max_min(self, dataframe: Optional[DataFrame]=None, get_max: bool=False) -> int:
         """
@@ -311,6 +318,8 @@ class ideation_ec_automation:
         else:
             local_df.to_csv(location)
 
+        return None
+
     def convert_deliminator(self, location: Optional[str]=None, file: Optional[str]=None, sep: Optional[str]=None):
         """
         Convert the delimiter of a file.
@@ -345,6 +354,22 @@ class ideation_ec_automation:
 
         remove(file_path)
         rename(export_path, file_path)
+    
+    def delete_temp_files(self, location: Optional[str]=None) -> None:
+
+        if location is None:
+            location = self.source
+
+        patten = path_join(location, "f_Temp_file-*.*")
+
+        for temp_file in glob(patten):
+            # Check if the file exists
+            if path_exists(temp_file):
+                # Delete the file
+                remove(temp_file)
+
+        return None
+        
 
 if __name__ == "__main__":
     path_in = "C:\\Users\\westw\\Documents\\Personal\\Ideation_Automation\\test_case"
@@ -354,3 +379,4 @@ if __name__ == "__main__":
     test.format_file_to_csv(blank_line=1, head=False)
     test.create_df()
     test.plot_res(column=2, smooth=15, graph=True, threshold=1.e-8, min_height=1.e-7, direction=1, bounds=None)
+    test.delete_temp_files()
