@@ -61,10 +61,14 @@ class ideation_ec_automation:
         Returns:
         - None
         """
+
+        # Initializing values 
         self.source = source
         self.filename = filename
+        self.original_filename = filename
         self.data = DataFrame()
 
+        # path variables
         if path_exists(source + "\\" + "figures") is False:
             mkdir(source + "\\" + "figures")
 
@@ -84,16 +88,21 @@ class ideation_ec_automation:
         Returns:
         - str: The path of the exported csv file.
         """
+
+        # setting up defailt values        
         if location is None:
             location = self.source
         if file is None:
             file = self.filename
 
+        
+        # file path conversion
         file_path = self.source + '\\' + file
         self.filename = self.filename.replace('.txt', '') + '.csv'
         self.filename = self.filename.replace(',', '')
         export_path = location + '\\' + self.filename
 
+        # copy created and deleted
         copy(file_path, export_path)
         remove(file_path)
 
@@ -109,13 +118,17 @@ class ideation_ec_automation:
         Returns:
         - int: The line number of the header.
         """
+
+        # Defailt values
         if head is False:
             head = 'Potential/V'
 
+        # Initializing variables
         count = 0
         file = open(self.source + "\\" + self.filename)
         lines = file.readlines()
 
+        # going line by line looking for header
         for line in lines:
             if head in line:
                 break
@@ -134,17 +147,22 @@ class ideation_ec_automation:
         Returns:
         - None
         """
-        skip = self.get_header_line(head=head)
-        file = open(self.source + "\\" + self.filename)
-        header = islice(file, skip, skip+1)
-        content = islice(file, skip + blank_line + 1, None)
 
+        # Initializing variables
+        skip = self.get_header_line(head=head)
+        with open(self.source + "\\" + self.filename, 'r') as out:
+            file_data = out.readlines()
+        header = islice(file_data, skip, skip+1)
+        content = islice(file_data, skip + blank_line + 1, None)
+
+        # Dataframe indexing 
         if column_index is not None:
             self.filename = 'f_Temp_file-' + str(column_index) + '-' + self.filename
         else:
-            self.filename = 'f_Temp_file--' + self.filename
+            self.filename = 'f_Temp_file-' + self.filename
 
-        with open(self.source + "\\" + self.filename, 'r') as out:
+        # lines for writting to dochment when a human is not needed
+        with open(self.source + "\\" + self.filename, 'w') as out:
             out.writelines(header)
 
             for line in content:
@@ -180,20 +198,25 @@ class ideation_ec_automation:
         Returns:
         - None
         """
+
+        # Initalizing data with default values
         x = self.data
 
+        # setting up the data for the graph
         if bounds is not None:
             x = x.loc[x.index.to_series().between(bounds[0], bounds[1])]
 
         if column is not None:
             x = x.iloc[:, [column]]
 
+        # applying smothing function to remve noise
         if smooth is not False:
             if smooth is True:
                 if type(smooth) is bool: smooth = 5
                 if type(smooth) is int: smooth = smooth
             x = x.ewm(span=smooth).mean()
 
+        # The for loop for finding nad identifyng peaks
         for i in range(len(x.columns)):
             peaks, _ = find_peaks(direction*x.iloc[:, i].to_numpy(), height=min_height)
             prominences = peak_prominences(-x.iloc[:, i].to_numpy(), peaks)[0]
@@ -202,6 +225,7 @@ class ideation_ec_automation:
             peaks = peaks[filter_arr]
             prominences = prominences[filter_arr]
 
+        # plotting graphs
         if graph is True:
             tag = datetime.today().strftime('%Y-%m-%d_%H-%M-%S') + ".png"
             plt.plot(x)
@@ -303,7 +327,7 @@ class ideation_ec_automation:
         - None
         """
         if location is None:
-            location = self.source + "\\" + "summary" + "\\" + "summary-" + self.filename
+            location = self.source + "\\" + "summary" + "\\" + "summary-" + self.original_filename
 
         existing_file = False
 
@@ -356,6 +380,15 @@ class ideation_ec_automation:
         rename(export_path, file_path)
     
     def delete_temp_files(self, location: Optional[str]=None) -> None:
+        """
+        Deletes temporary files from the specified location or from the default source location.
+
+        Args:
+            location (str, None): The location from which to delete the temporary files. If not provided, the default source location will be used.
+
+        Returns:
+            None
+        """
 
         if location is None:
             location = self.source
