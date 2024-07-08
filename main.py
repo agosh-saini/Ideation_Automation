@@ -20,13 +20,13 @@ if __name__ == '__main__':
               [sg.Text('Seperator')],
               [sg.Listbox(values=list(['Comma', 'Tab']), size=(10, 5), key='seperator')],
               [sg.Text('Blank Lines'), sg.InputText(key='blank')],
+              [sg.Text('List the index of column from 1 - n that you want to plot seperated by comma'), sg.Text()],
               [sg.Text('List Columns'), sg.InputText(key='column')],
               [sg.Text('Smooth Value'), sg.InputText(key='smooth')],
               [sg.Checkbox('Entire Bound', default=True, key='entire_bound')],
               [sg.Text('Lower Bound'), sg.InputText(key='lower_bound')],
               [sg.Text('Upper Bound'), sg.InputText(key='upper_bound')],
               [sg.Checkbox('Get Graphs', default=True, key='graph')],
-              [sg.Text('Threshold'), sg.InputText(key='thres')],
               [sg.Text('Min Height'), sg.InputText(key='height')],
               [sg.Text('Check for Peak, Unchecked for Valley'), sg.Text()],
               [sg.Checkbox('Check for Peak, Uncheck for Valley', default=False, key='peak')],
@@ -62,9 +62,10 @@ if __name__ == '__main__':
         bound = [float(values["lower_bound"]), float(values("upper_bound"))]
 
 
+
     # repeat for all the files we have
     for file in files:
-        for column_i in literal_eval(values['column']):
+        for column_i in literal_eval(f"[{values['column']}]"):
             test = ideation_ec_automation(path, file)
 
             # change the seperator
@@ -81,13 +82,14 @@ if __name__ == '__main__':
             df = test.create_df()
 
             # look for peaks and get the graphs
-            test.plot_res(column=[column_i],
+            test.plot_res(column=column_i-1,
                           smooth=float(values['smooth']), graph=values['graph'],
-                          threshold=float(values['thres']),
+                          threshold=float(values['height']) * 0.1,
                           min_height=float(values['height']),
                           direction=direction,
                           bounds=bound)
 
+    test.delete_temp_files()
     # -------- SCRIPT END ------------- #
 
     # following is the test inputs for test data
