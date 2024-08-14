@@ -1,7 +1,7 @@
 # Square Wave Electrochemical Sensing Data Analysis Software
 ## Motivation
 
-Square Wave Voltammetry (SWV) is a powerful electrochemical technique used electrochemical biosensors designed to detect biomarker and other analytes. In this kind of biosensing usually  a significant amounts of SWV data is generated, leading to researchers spending significant amounts of time in data formatting and analysis. The manual analysing of data limits the number of experiments that an individual researcher is able to perform. The Ideation Automation program is designed to help researcher in analysing SWV data. It extracts relevant points in the SWV data, generates a summary of all the values found in any specific channel of interest, and automatically generate a labeled graph with peak values. This program can significantly increase the research productively of projects utilizing SWV.
+Square Wave Voltammetry (SWV) is a powerful electrochemical technique used electrochemical biosensors designed to detect biomarker and other analytes. In this kind of biosensing usually  a significant  amounts of SWV data is generated, leading to researchers spending significant amounts of time in data formatting and analysis. The manual analysing of data limits the number of experiments that an individual researcher is able to perform. The Ideation Automation program is designed to help researcher in analysing SWV data. It extracts relevant points in the SWV data, generates a summary of all the values found in any specific channel of interest, and automatically generate a labeled graph with peak values. This program can significantly increase the research productively of projects utilizing SWV.
 
 ## Programming Decisions
 1.	**User-Centric Design**: The program is designed with enough flexibility to ensure it can parse and remove additional information often attached to output files from different systems. The manual entry of “headers” and “blank lines” allows the user to adjust how the program parses and remove information to meet the needs of their specific system.
@@ -26,11 +26,31 @@ Please refer to Usage_Steps.pdf usage steps. The document contains screenshots o
 
 ## Installation
 
-**Step 1**: Download [Automate_SW_v1.zip](https://github.com/agosh-saini/Ideation_Automation/blob/master/Automate_SW_v1.zip) \
-**Step 2**: Extract the zip file into a folder with no other files \
-**Step 3**: To run, click **Automate_SW.bat** file 
+**Step 1**: Download the zip file  **dist.zip** \
+**Step 2**: Extract the zip file in the desired location \
+**Step 3**: To run, click **Ideation Automation.bat** file \
 
-*Note: This method only works on Windows computers, for Mac or Linux operating systems, some modidifications may be required to the python files*
+*Note: This method only works on Windows computers, for Mac or Linux operating systems, some modidifications may be required to the python files* \
+
+
+## Running Through Python Files
+
+**Step 1**: clone the repository \
+**Step 2**: Move repository folder to desired location \
+**Step 3**: To run, click **main.py** file  \
+
+## Rebuilding Executable using pyinstaller
+
+**Step 1**: Install PyInstaller using pip 
+```
+    pip install -U pyinstaller
+```
+**Step 2**: Ensure repository and **main.spec** file are present \
+**Step 3**: Run the following command 
+```
+    pyinstaller main.spec
+```
+**Step 4**: Run the **main.exe** file found in the dist folder \
 
 ## Main Functions in Class
 
