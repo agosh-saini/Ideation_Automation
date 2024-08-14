@@ -27,7 +27,7 @@ Please refer to Usage_Steps.pdf usage steps. The document contains screenshots o
 
 ## Installation
 
-**Step 1**: Download the zip file  **dist.zip** \
+**Step 1**: Download the zip file  **dist.zip** from the **Release** tab \
 **Step 2**: Extract the zip file in the desired location \
 **Step 3**: To run, click **Ideation Automation.bat** file \
 
