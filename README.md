@@ -1,4 +1,5 @@
 # Square Wave Electrochemical Sensing Data Analysis Software
+
 ## Motivation
 
 Square Wave Voltammetry (SWV) is a powerful electrochemical technique used electrochemical biosensors designed to detect biomarker and other analytes. In this kind of biosensing usually  a significant  amounts of SWV data is generated, leading to researchers spending significant amounts of time in data formatting and analysis. The manual analysing of data limits the number of experiments that an individual researcher is able to perform. The Ideation Automation program is designed to help researcher in analysing SWV data. It extracts relevant points in the SWV data, generates a summary of all the values found in any specific channel of interest, and automatically generate a labeled graph with peak values. This program can significantly increase the research productively of projects utilizing SWV.
