@@ -1,0 +1,8 @@
+Tested on: 
+    Python 3.10.1
+
+    Windows:
+        Edition: Windows 11 Home
+        Version: 23H2
+        OS build: 22631.4037
+
