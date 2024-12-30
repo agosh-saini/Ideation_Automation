@@ -67,9 +67,4 @@ Please refer to Usage_Steps.pdf usage steps. The document contains screenshots o
 This work was done as part of my time at the IDEATION lab under Dr. Mahla Poudineh. ChatGPT was used for resolving errors while creating the files.
 
 ## Citation Information
-
-Please cite this package if it was used in your work. Information for citation can be found below: \
-Name - Agosh Saini, Fatemeh Keyvani, Mahla Poudineh \
-Contact - contact@agoshsaini.com \
-Year of publication - 2024 \
-Title - Square Wave Electrochemical Sensing Data Analysis Software\
+Agosh Saini, Fatemeh Keyvani, and Mahla Poudineh, “Method For Automated Square Wave Electrochemical Sensing Data Pre-Processing”. Zenodo, Oct. 04, 2024. doi: 10.5281/zenodo.13891459.
